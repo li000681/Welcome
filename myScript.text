@@ -1,0 +1,71 @@
+#!/bin/bash
+# lab8, Jianchuan LI, 040956867, CST8102 Lab8, myscript, 2020/Mar/23, this script would output a menu and perform the choice from user input
+# print menu and read the input
+
+choice=n # initialize choice to anyone except q or Q, so the loop can begin
+
+while [ $choice != "q" ] && [ $choice != "Q" ]
+do
+echo -e  "A) Create a user account\nB) Delete a user account\nC) Change supplementary group for a user account\nD) Change initial group for a user account\nE) Change default login shell for a user account\nF) Change account expiration date for a user account\nQ) Quit"; 
+read -p "Input your choice: " choice # when input isn't "q" or "Q", perform the task according to the choice
+clear
+	if [ $choice = "a" ]||[ $choice = "A" ];
+	then
+	# prompt username, home directory and bash, store them in userN, userD, userS
+		read -p  "Enter your username: " userN
+		read -p  "Enter your’s home directory(like /home): " userD
+		read -p  "Enter your default login shell(like /bin/bash ): " userS
+		sudo useradd -m -d $userD -s $userS $userN #create user
+		# if command success, output success information
+		if [ $? -eq 0 ]
+		then
+		  echo "user "$userN " is created."
+		fi
+	elif [ $choice = "b" ]||[ $choice = "B" ];
+	then
+		read -p  "Enter the username of the account to be deleted: " userN
+		sudo userdel -r $userN #delete user
+		if [ $? -eq 0 ]
+		then
+			echo "user "$userN " is deleted."	
+		fi
+	elif [ $choice = "c" ]||[ $choice = "C" ];
+	then
+			read -p  "Enter the username of the account to be changed: " userN
+			read -p  "Enter the supplementary group: " groupN
+			sudo usermod -a -G $groupN $userN #set supplementary group 
+			if [ $? -eq 0 ]
+			then
+				echo "group "$groupN " is added."
+			fi
+	elif [ $choice = "d" ]||[ $choice = "D" ];
+	then
+			read -p  "Enter the username of the account to be changed: " userN
+			read -p  "Enter the initial group: " groupN
+			sudo usermod  -G $groupN $userN # set initial group
+			if [ $? -eq 0 ]
+			then
+				echo "group "$groupN " is changed to be initial group."
+			fi
+	elif [ $choice = "e" ]||[ $choice = "E" ];
+	then
+			read -p  "Enter the username of the account to be changed: " userN
+			read -p  "Enter the shell name(/bin/bash): " shellN
+			sudo usermod  -s $shellN $userN #set user shell
+			if [ $? -eq 0 ]
+			then
+				echo "shell "$shellN " is changed to be default login shell."
+			fi
+	elif [ $choice = "f" ]||[ $choice = "F" ];
+	then
+			read -p  "Enter the username of the account to be changed: " userN
+			read -p  "Enter the expiration date(like 2014-11-01): " expD
+			sudo usermod  -e $expD $userN #set expiration date
+			if [ $? -eq 0 ]
+			then
+				echo "date "$expD " is setted to be the expiration date."
+			fi
+	
+	fi
+sleep 3
+done
